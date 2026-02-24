@@ -13,21 +13,21 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi;
+using Microsoft.OpenApi.Models;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Configs
 var jwtConfig = new JwtConfig();
-
 builder.Services.AddConfigs(builder.Configuration, opt =>
     opt.AddConfig<JwtConfig>(out jwtConfig));
 
+// Database
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
-        .EnableSensitiveDataLogging()
-        .EnableDetailedErrors());
+           .EnableSensitiveDataLogging()
+           .EnableDetailedErrors());
 
 // Repositories
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
@@ -36,7 +36,7 @@ builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IRefreshTokenService, RefreshTokenService>();
 
-// Auth
+// Identity & Auth
 builder.Services.AddIdentity<User, IdentityRole<Guid>>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddTokenProvider<DataProtectorTokenProvider<User>>(TokenOptions.DefaultProvider);
@@ -60,52 +60,83 @@ builder.Services.AddAuthentication(options =>
     options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 })
-    .AddJwtBearer(options =>
-    {
-        options.SaveToken = true;
-        options.TokenValidationParameters = tokenValidationParameters;
-    });
+.AddJwtBearer(options =>
+{
+    options.SaveToken = true;
+    options.TokenValidationParameters = tokenValidationParameters;
+});
 
 // Utility
 builder.Services.AddCors();
 builder.Services.AddSeeding();
 
-// Mapper
+// AutoMapper
 builder.Services.AddAutoMapper(typeof(UserProfile));
 
-builder.Services.AddSwaggerGen();
-
-builder.Services.AddControllers();
-builder.Services.AddOpenApi();
-
+// Swagger / OpenAPI
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Description = "Standard Authorization header using the Bearer scheme. Example: \"bearer {token}\"",
+        In = ParameterLocation.Header,
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey
+    });
 
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            Array.Empty<string>()
+        }
+    });
+
+    c.MapType<TimeSpan>(() => new OpenApiSchema
+    {
+        Type = "string",
+        Example = new Microsoft.OpenApi.Any.OpenApiString("00:00:00")
+    });
+});
+
+// Controllers
 builder.Services.AddControllers(opt => opt.Filters.Add<CustomExceptionFilterAttribute>());
 
 var app = builder.Build();
 
+// Migrate DB
 app.MigrateDatabase();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI(c =>
-    {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "FuelStation API V1");
-    });
-}
-
+// Middleware
 app.UseHttpsRedirection();
 
 app.UseCors(x => x.AllowAnyHeader()
-    .AllowAnyOrigin()
-    .AllowAnyMethod());
+                  .AllowAnyOrigin()
+                  .AllowAnyMethod());
 
 app.UseAuthentication();
 app.UseAuthorization();
 
+// Swagger UI
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+    app.UseDeveloperExceptionPage();
+}
+app.UseHttpsRedirection();
 
+
+// Map Controllers
 app.MapControllers();
 
+// Run app
 app.Run();
