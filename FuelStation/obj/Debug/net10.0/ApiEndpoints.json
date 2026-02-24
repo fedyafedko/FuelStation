@@ -1,0 +1,90 @@
+[
+  {
+    "ContainingType": "FuelStation.Controllers.AuthController",
+    "Method": "RefreshToken",
+    "RelativePath": "api/auth/refresh-token",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "FuelStation.Common.Models.DTOs.Auth.RefreshTokenDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "FuelStation.Common.Models.DTOs.Auth.AuthSuccessDTO",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "FuelStation.Controllers.AuthController",
+    "Method": "f",
+    "RelativePath": "api/auth/sign",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FuelStation.Controllers.AuthController",
+    "Method": "SignIn",
+    "RelativePath": "api/auth/sign-in",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "FuelStation.Common.Models.DTOs.Auth.SignInDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "FuelStation.Common.Models.DTOs.Auth.AuthSuccessDTO",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "FuelStation.Controllers.AuthController",
+    "Method": "SignUp",
+    "RelativePath": "api/auth/sign-up",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "FuelStation.Common.Models.DTOs.Auth.SignUpDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "FuelStation.Common.Models.DTOs.Auth.AuthSuccessDTO",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  }
+]
