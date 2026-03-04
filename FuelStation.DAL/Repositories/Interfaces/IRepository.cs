@@ -1,6 +1,6 @@
 ﻿namespace FuelStation.DAL.Repositories.Interfaces;
 
-public interface IRepository<TEntity> : IQueryable<TEntity>, IAsyncEnumerable<TEntity>
+public interface IRepository<TEntity> : IQueryable<TEntity>
 {
     IQueryable<TEntity> FromSqlInterpolated(FormattableString sql);
 
@@ -31,4 +31,5 @@ public interface IRepository<TEntity> : IQueryable<TEntity>, IAsyncEnumerable<TE
     Task<int> SaveChangesAsync();
 
     int SaveChanges();
+    IQueryable<TEntity> Query();
 }

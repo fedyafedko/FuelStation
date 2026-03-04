@@ -29,14 +29,14 @@ public class Repository<TEntity> : IRepository<TEntity>
         return ((IEnumerable<TEntity>)_table).GetEnumerator();
     }
 
+    public IQueryable<TEntity> Query()
+    {
+        return _table.AsQueryable();
+    }
+
     IEnumerator IEnumerable.GetEnumerator()
     {
         return GetEnumerator();
-    }
-
-    public IAsyncEnumerator<TEntity> GetAsyncEnumerator(CancellationToken cancellationToken = new())
-    {
-        return ((IAsyncEnumerable<TEntity>)_table).GetAsyncEnumerator(cancellationToken);
     }
 
     public IQueryable<TEntity> FromSqlInterpolated(FormattableString sql)

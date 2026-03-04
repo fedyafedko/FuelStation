@@ -16,9 +16,8 @@ public class RoleSeedingBehaviour : ISeedingBehaviour
     {
         var roles = new List<string>
         {
-            "Admin",
-            "Teacher",
-            "Student"
+            "Dispatcher",
+            "Driver"
         };
 
         foreach (var role in roles)

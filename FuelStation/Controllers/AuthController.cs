@@ -42,4 +42,3 @@ public class AuthController : ControllerBase
         return Ok(await _refreshTokenService.RefreshTokenAsync(dto));
     }
 }
-

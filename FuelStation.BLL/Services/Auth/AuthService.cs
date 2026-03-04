@@ -40,7 +40,14 @@ public class AuthService : AuthServiceBase, IAuthService
             throw new IdentityException("Unable to create a user. Please try again later or use another email address");
         }
 
-        _logger.LogInformation("Email confirmation code sent to user {0}", user.Id);
+        var role = dto.Role;
+        var roleResult = await _userManager.AddToRoleAsync(user, role);
+
+        if (!roleResult.Succeeded)
+        {
+            _logger.LogError($"Failed to add user to role. Role: {role}");
+            throw new IdentityException($"User manager operation failed: {roleResult.Errors}");
+        }
 
         return await GenerateAuthResultAsync(user);
     }

@@ -1,6 +1,8 @@
 using FuelStation.ActionFilters;
 using FuelStation.BLL.Profiles;
+using FuelStation.BLL.Services;
 using FuelStation.BLL.Services.Auth;
+using FuelStation.BLL.Services.Interfaces;
 using FuelStation.BLL.Services.Interfaces.Auth;
 using FuelStation.Common.Models.Configs;
 using FuelStation.DAL.Contexts;
@@ -35,6 +37,9 @@ builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 // Services
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IRefreshTokenService, RefreshTokenService>();
+builder.Services.AddScoped<IRequestService, RequestService>();
+builder.Services.AddScoped<ICarService, CarService>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 // Identity & Auth
 builder.Services.AddIdentity<User, IdentityRole<Guid>>()
@@ -121,6 +126,8 @@ app.UseHttpsRedirection();
 app.UseCors(x => x.AllowAnyHeader()
                   .AllowAnyOrigin()
                   .AllowAnyMethod());
+
+await app.ApplySeedingAsync();
 
 app.UseAuthentication();
 app.UseAuthorization();

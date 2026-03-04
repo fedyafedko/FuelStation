@@ -8,5 +8,5 @@ public class SignUpDTO
 
     public string Password { get; set; } = string.Empty;
 
-    public string DefaultCurrencyCode { get; set; } = string.Empty;
+    public string Role { get; set; }
 }
