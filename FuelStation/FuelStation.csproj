@@ -9,6 +9,8 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="12.0.1" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
+    <PackageReference Include="Hangfire.Dashboard.Basic.Authentication" Version="8.0.0" />
+    <PackageReference Include="Hangfire.SqlServer" Version="1.8.23" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.3">
       <PrivateAssets>all</PrivateAssets>
@@ -21,6 +23,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\FuelStation.BLL\FuelStation.BLL.csproj" />
+    <ProjectReference Include="..\FuelStation.Hangfire\FuelStation.Hangfire.csproj" />
     <ProjectReference Include="..\FuelStation.Seeding\FuelStation.Seeding.csproj" />
   </ItemGroup>
 

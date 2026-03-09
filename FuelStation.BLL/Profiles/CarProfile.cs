@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using FuelStation.Common.Models.DTOs.Car;
 using FuelStation.DAL.Entities;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace FuelStation.BLL.Profiles;
 
@@ -13,4 +14,3 @@ public class CarProfile : Profile
         CreateMap<UpdateCarDTO, Car>();
     }
 }
-

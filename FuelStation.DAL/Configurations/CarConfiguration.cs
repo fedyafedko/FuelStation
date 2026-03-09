@@ -1,6 +1,5 @@
 ﻿using FuelStation.DAL.Configurations.Base;
 using FuelStation.DAL.Entities;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace FuelStation.DAL.Configurations;

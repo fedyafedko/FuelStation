@@ -20,4 +20,5 @@ public class FuelRequest : BaseEntity
     public Car Car { get; set; }
     public Location? Location { get; set; }
     public Payment Payment { get; set; }
+    public Route Route { get; set; }
 }

@@ -4,6 +4,7 @@ using FuelStation.DAL.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FuelStation.DAL.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260304215657_AddNameUser")]
+    partial class AddNameUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -172,48 +175,6 @@ namespace FuelStation.DAL.Migrations
                     b.HasIndex("CurrentLocationId");
 
                     b.ToTable("Robot", (string)null);
-                });
-
-            modelBuilder.Entity("FuelStation.DAL.Entities.Route", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<double>("Distance")
-                        .HasColumnType("float");
-
-                    b.Property<double>("Duration")
-                        .HasColumnType("float");
-
-                    b.Property<double>("EndLat")
-                        .HasColumnType("float");
-
-                    b.Property<double>("EndLng")
-                        .HasColumnType("float");
-
-                    b.Property<Guid>("FuelRequestId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Geometry")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<double>("StartLat")
-                        .HasColumnType("float");
-
-                    b.Property<double>("StartLng")
-                        .HasColumnType("float");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("FuelRequestId")
-                        .IsUnique();
-
-                    b.ToTable("Route", (string)null);
                 });
 
             modelBuilder.Entity("FuelStation.DAL.Entities.User", b =>
@@ -480,17 +441,6 @@ namespace FuelStation.DAL.Migrations
                     b.Navigation("CurrentLocation");
                 });
 
-            modelBuilder.Entity("FuelStation.DAL.Entities.Route", b =>
-                {
-                    b.HasOne("FuelStation.DAL.Entities.FuelRequest", "FuelRequest")
-                        .WithOne("Route")
-                        .HasForeignKey("FuelStation.DAL.Entities.Route", "FuelRequestId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("FuelRequest");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", null)
@@ -550,9 +500,6 @@ namespace FuelStation.DAL.Migrations
             modelBuilder.Entity("FuelStation.DAL.Entities.FuelRequest", b =>
                 {
                     b.Navigation("Payment")
-                        .IsRequired();
-
-                    b.Navigation("Route")
                         .IsRequired();
                 });
 

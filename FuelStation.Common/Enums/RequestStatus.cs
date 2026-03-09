@@ -2,7 +2,9 @@
 
 public enum RequestStatus
 {
-    Completed = 0,
-    InProgress = 1,
-    Cancelled = 2,
+    Pending = 0,
+    Completed = 1,
+    InProgress = 2,
+    Cancelled = 3,
+    RobotUnavailable = 4,
 }

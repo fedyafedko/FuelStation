@@ -10,7 +10,11 @@ using FuelStation.DAL.Entities;
 using FuelStation.DAL.Repositories;
 using FuelStation.DAL.Repositories.Interfaces;
 using FuelStation.Extensions;
+using FuelStation.Hangfire.Abstractions;
+using FuelStation.Hangfire.Extensions;
+using FuelStation.Hangfire.Services;
 using FuelStation.Seeding.Extentions;
+using Hangfire;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -22,8 +26,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Configs
 var jwtConfig = new JwtConfig();
-builder.Services.AddConfigs(builder.Configuration, opt =>
-    opt.AddConfig<JwtConfig>(out jwtConfig));
+var hangfireConfig = new HangfireConfig();
+builder.Services.AddConfigs(builder.Configuration, opt => opt
+    .AddConfig<JwtConfig>(out jwtConfig)
+    .AddConfig<HangfireConfig>(out hangfireConfig));
 
 // Database
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -40,6 +46,9 @@ builder.Services.AddScoped<IRefreshTokenService, RefreshTokenService>();
 builder.Services.AddScoped<IRequestService, RequestService>();
 builder.Services.AddScoped<ICarService, CarService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ILocationService, LocationService>();
+builder.Services.AddScoped<IFuelRequestService, FuelRequestService>();
+builder.Services.AddScoped<IProcessFuelRequestService, ProcessFuelRequestService>();
 
 // Identity & Auth
 builder.Services.AddIdentity<User, IdentityRole<Guid>>()
@@ -70,6 +79,13 @@ builder.Services.AddAuthentication(options =>
     options.SaveToken = true;
     options.TokenValidationParameters = tokenValidationParameters;
 });
+
+// Hangfire
+builder.Services.AddHangfire(cfg =>
+    cfg.UseSqlServerStorage(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddHangfireServer();
+builder.Services.AddScoped<IHangfireService, HangfireService>();
+
 
 // Utility
 builder.Services.AddCors();
@@ -117,6 +133,8 @@ builder.Services.AddControllers(opt => opt.Filters.Add<CustomExceptionFilterAttr
 
 var app = builder.Build();
 
+app.SetupHangfire(hangfireConfig);
+
 // Migrate DB
 app.MigrateDatabase();
 
@@ -139,8 +157,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
     app.UseDeveloperExceptionPage();
 }
-app.UseHttpsRedirection();
 
+app.UseHangfireDashboard("/hangfire");
 
 // Map Controllers
 app.MapControllers();
