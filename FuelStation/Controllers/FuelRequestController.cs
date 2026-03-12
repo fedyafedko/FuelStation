@@ -24,4 +24,22 @@ public class FuelRequestController : ControllerBase
 
         return Ok(result);
     }
+
+    [HttpPut("confirm")]
+    public async Task<IActionResult> Confirm(Guid requestId, string code)
+    {
+        var userId = HttpContext.GetUserId();
+        await _fuelRequestService.ConfirmRequestAsync(userId, requestId, code);
+
+        return Ok();
+    }
+
+    [HttpPut("complete")]
+    public async Task<IActionResult> Complete(Guid requestId)
+    {
+        var userId = HttpContext.GetUserId();
+        await _fuelRequestService.CompleteRequestAsync(userId, requestId);
+
+        return Ok();
+    }
 }

@@ -15,6 +15,8 @@ public class FuelRequest : BaseEntity
     public DateTime? CompletedAt { get; set; }
     public string? CancelReason { get; set; }
     public Guid PaymentId {  get; set; }
+    public string ConfirmationCode { get; set; }
+    public bool IsConfirmed { get; set; }
 
     public Robot? Robot { get; set; }
     public Car Car { get; set; }

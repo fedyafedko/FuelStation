@@ -52,4 +52,55 @@ public class FuelRequestService : IFuelRequestService
 
         return _mapper.Map<FuelRequestDTO>(entity);
     }
+
+    public async Task ConfirmRequestAsync(Guid userId, Guid requestId, string code)
+    {
+        var request = await _fuelRequestRepository
+            .Query()
+            .Include(x => x.Car)
+            .FirstOrDefaultAsync(x => x.Id == requestId)
+            ?? throw new NotFoundException("Request not found");
+
+        if (request.Car.UserId != userId)
+            new ForbiddenException("Invalid user for this request");
+
+        if (request.ConfirmationCode != code)
+            new ExternalException("Invalid code");
+
+        request.IsConfirmed = true;
+        await _fuelRequestRepository.UpdateAsync(request);
+    }
+
+    public async Task CompleteRequestAsync(Guid userId, Guid requestId)
+    {
+        var request = await _fuelRequestRepository
+            .Query()
+            .Include(x => x.Car)
+            .Include(x => x.Robot)
+            .FirstOrDefaultAsync(x => x.Id == requestId)
+            ?? throw new NotFoundException("Request not found");
+
+        if (request.Car.UserId != userId)
+            throw new ForbiddenException("Invalid user for this request");
+
+        if (request.Status != RequestStatus.InProgress)
+            throw new InvalidOperationException("Fueling is not in progress");
+
+        if (request.CompletedAt != null)
+            throw new InvalidOperationException("Fuel request already completed");
+
+        request.CompletedAt = DateTime.UtcNow;
+
+        request.Status = RequestStatus.Completed;
+
+        if (request.Robot != null)
+        {
+            request.Robot.Status = RobotStatus.Idle;
+        }
+
+        var updated = await _fuelRequestRepository.UpdateAsync(request);
+
+        if (!updated)
+            throw new ExternalException("Failed to complete fuel request");
+    }
 }

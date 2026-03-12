@@ -98,6 +98,7 @@ public class ProcessFuelRequestService : IProcessFuelRequestService
 
             request.RobotId = suitableRobot.Robot.Id;
             request.Status = RequestStatus.InProgress;
+            request.ConfirmationCode = Random.Shared.Next(100000, 999999).ToString();
             suitableRobot.Robot.Status = RobotStatus.Busy;
 
             var routeEntity = _mapper.Map<DAL.Entities.Route>(suitableRobot.RouteResponse);
